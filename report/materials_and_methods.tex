@@ -257,7 +257,10 @@ which corresponds to a data rate low enough for BLE.
 
 \subsection{Software}
 Implementing the control strategy required multiple software components to be 
-developed. 
+developed. Effort was made to render said software easily comprehensible, 
+reusable and upgradeable. A \href{https://github.com/BombVoyage/soft_elbow_orthosis}{Github repository} 
+was created to share all code and provide a guide for anyone interested 
+in replicating the methods described in this report.  
 \subsubsection{Embedded software}
 A program that reads sensor data, transforms the IMUs' quaternions 
 into a joint angle and sends processed data over BLE was developed for the 
@@ -320,10 +323,10 @@ $\beta$ is joint friction.
 Four neural network models with identical one hidden layer architecture were trained. 
 The initial two models were trained on a singular dataset. One model was trained 
 solely on sEMG signals to predict torque, while the other model incorporated angle 
-information in addition. These models were labeled as $open_model$ and $closed_model$ 
+information in addition. These models were labeled as $open\_model$ and $closed\_model$ 
 respectively. Subsequently, a second set of models were trained utilizing all 
 accessible test data. These models also varied in their inputs akin to the first 
-pair. They were denoted as $multi_open_model$ and $multi_closed_model$ respectively.
+pair. They were denoted as $multi\_open\_model$ and $multi\_closed\_model$ respectively.
 \FloatBarrier
 
 \subsubsection{Inverse model}
@@ -419,4 +422,4 @@ the sensor values. Torque estimation is subsequently performed and by using the
 orthosis inverse model and applying a $K$ gain, the command is finally sent to 
 the motor driver.  
 
-Sensor data is saved as CSV in a user specified file.  
+Experiment data is saved both as a CSV file and as an image.  
