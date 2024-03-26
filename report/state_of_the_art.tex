@@ -1,0 +1,60 @@
+\chapter{State of the art}
+
+\section{Introduction}
+% All similar research
+Multiple research papers have covered the topic of soft wearable orthoses for 
+upper as well as lower limbs. Lu et al. \cite{lu_development_2019} have developed 
+a joint torque estimation control strategy for a soft elbow exoskeleton to 
+provide effective power assistance. Later, Wu at al. 
+have expanded on this work by optimizing anchor points in the mechanical design and 
+modifying the control strategy \cite{wu_neural-network-enhanced_2019}, then by updating 
+the estimation of joint torque to determine motion intention \cite{wu_adaptive_2023}.
+
+
+\section{Sensors}
+% muscle activity, angle, force
+When it comes to the control system itself, multiple sensors can be used to acquire 
+relevant data. This data is required for the generation of input as well as the 
+control feedback. In the case of an upper limb orthotic device, the system input 
+is defined by the user's motion intention and feedback can include position, velocity, 
+acceleration, torque and force.
+
+According to a systematic review of the signals, sensors and methods for controlling 
+active upper limb orthotic devices \cite{dos_santos_signals_2023}:
+\begin{quotation}
+The results indicate that electromyography (EMG) was the most used signal for 
+controlling these devices, described in 36 articles, followed by 
+electroencephalography (EEG), used by 15 authors. Among the other signals used 
+were force myography (FMG), force-sensing resistors (FSR), inertial measurement 
+unit (IMU) sensors and external torques.
+\end{quotation}
+
+\subsection{Motion intention}
+Multiple signals can indicate motion intention in a patient. As previously stated, 
+EMG and EEG are most often used for this application. Alternatives such as FMG may 
+also be used.  
+\begin{IEEEitemize}
+\item EMG measures muscle response or electrical activity in response to a nerve's 
+stimulation of the muscle
+\item EEG measures electrical activity in the brain
+\item FMG measures the volumetric changes of the underlying musculotendinous complex 
+during muscle activities \cite{jiang_exploration_2017}
+\end{IEEEitemize}
+One advantage of EMG and EEG signals over FMG is that they manifest before the 
+corresponding muscle response. Begovic et al. show that on average, the electromechanical 
+delay between EMG and force is 50ms \cite{begovic_detection_2014}. Furthermore, 
+EEG precede their EMG response by around 23ms \cite{xu_delay_2016}. Therefore, 
+EMG and EEG signals can allow for a quicker reaction to the user's motion intention 
+compared to FMG. 
+\subsection{Kinematics}
+Various sensors can serve the purpose of gathering information about the system 
+kinematics. The most 
+% IMUs: accel, gyro, magn
+
+\subsection{Dynamics}
+
+\section{Actuators}
+% hydraulics, motors, types of motors
+
+\section{Processing}
+% How to get motor input from muscle activity

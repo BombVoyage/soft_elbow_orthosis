@@ -1,0 +1,49 @@
+\documentclass[11pt,a4paper]{report}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{IEEEtrantools}
+\graphicspath{ {./images/} }
+\usepackage{amsmath}
+\usepackage{placeins} % for \FloatBarrier
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usepackage{circuitikz}
+
+% Do not show "chapter N"
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Large}
+% Reduce the space before chapter titles
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+ \geometry{
+ a4paper,
+ left=25mm,
+ top=25mm,
+ }
+\begin{document}
+\input{title}
+\input{acknowledgements}
+\input{abstract}
+\input{introduction}
+\pagenumbering{roman}
+\tableofcontents
+\pagenumbering{arabic}
+\input{state_of_the_art}
+\input{materials_and_methods}
+\input{results}
+\input{further_work}
+\input{conclusion}
+\bibliographystyle{IEEEtran} % Specify bibliography style
+\bibliography{IEEEabrv,references}    % Include your .bib file
+\end{document}
