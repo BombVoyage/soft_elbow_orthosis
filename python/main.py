@@ -30,7 +30,7 @@ if __name__ == "__main__":
         "-t", "--timeout", type=int, default=5, help="Total test time in seconds"
     )
     parser.add_argument(
-        "-m", "--model", default="open_model_0", help="Neural network model name"
+        "-m", "--model", default="closed_model", help="Neural network model name"
     )
     parser.add_argument("-b", "--ble", action="store_true", help="BLE mode")
     parser.add_argument(
