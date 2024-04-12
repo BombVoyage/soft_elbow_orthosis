@@ -5,6 +5,17 @@ device.
 
 Follow this guide step by step to quickly reproduce the results from the report.  
 
+## Overview
+The project details can be found in `report` and `presentation`.  
+The `arduino` directory contains the microcontroller code to be flashed.  
+The `python` directory contains multiple useful files:  
+
+- `data_sender.py` is used to manually specify command values to send to the motor  
+- `main.py` is the primary program used to connect the sensor system to the motor system  
+- `torque_estimation.ipynb` is used for to create and test the torque estimation neural network models  
+
+The `src` directory mainly contains `driver.cpp` which interfaces the user PC with the EPOS4 driver.  
+
 ## Setup
 ### Environment setup
 
@@ -53,6 +64,8 @@ pip install -r python/requirements.txt
 ### Hardware setup
 
 For hardware connections, please refer to `report/report.pdf`.
+You may need to flash either the `main_ser.ino` or `main_ble.ino` from the `arduino`
+directory to the microcontroller depending on your chosen use case.  
 
 ## Usage examples
 Once you have set up the environment and hardware, you may conduct multiple 
