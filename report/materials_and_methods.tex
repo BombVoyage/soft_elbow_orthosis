@@ -45,9 +45,10 @@ Therefore, a single cable-motor system was chosen for simplicity.
 \FloatBarrier
 
 \section{Implementation}
-A few research papers \cite{lu_development_2019,wu_neural-network-enhanced_2019,wu_adaptive_2023} 
-served as guidelines for the project. The goal was to reproduce as much as possible 
-from these papers within the project time frame.  
+A few research papers \cite{lu_development_2019,wu_neural-network-enhanced_2019,
+wu_adaptive_2023,toro-ossaba_myoelectric_2024} served as guidelines for the project. 
+The goal was to reproduce as much as possible from these papers within the project 
+time frame.  
 
 \subsection{Hardware}
 The main computer system used to run all programs is a 64bit Linux machine with 
@@ -64,7 +65,7 @@ The sEMG sensor initially used was the DataLITE Wireless EMG sensor from Biometr
 Ltd. However, there was difficulty integrating the sensor with a Linux environment 
 as the Biometrics application was only available for Windows machines. Emulation 
 through Wine was tested but library dependencies could not be resolved. Therefore, 
-another sensor was required. The Myoware Musce Sensor 2 stood out among other options 
+another sensor was required. The Myoware Muscle Sensor 2 stood out among other options 
 as it was used in multiple prior works \cite{lu_development_2019,wu_neural-network-enhanced_2019,
 wu_adaptive_2023,russo_algorithm_2018}. As shown in Figure \ref{fig:myoware_processing}, 
 this sensor also had the advantage of having built-in signal processing. 
@@ -82,31 +83,6 @@ The Actuator system was composed of a 150W brushless DC motor from Maxon
   \caption{Myoware muscle sensor preprocessing diagram}
   \label{fig:myoware_processing}
 \end{figure}
-% \begin{figure}
-%     \centering
-%     \begin{subfigure}{0.3\textwidth}
-%         \centering
-%         \includegraphics[width=\linewidth]{myoware_sensor.jpg}
-%         \caption{Myoware muscle sensor}
-%         \label{fig:myoware_sensor}
-%     \end{subfigure}
-%     \begin{subfigure}{0.2\textwidth}
-%         \centering
-%         \includegraphics[width=\linewidth]{bno055_sensor.jpg}
-%         \caption{BNO055}
-%         \label{fig:bno_sensor}
-%     \end{subfigure}
-%     \begin{subfigure}{0.4\textwidth}
-%         \centering
-%         \includegraphics[width=\linewidth]{esp32.jpg}
-%         \caption{ESP32}
-%         \label{fig:esp32}
-%     \end{subfigure}
-%     \caption{
-%       Sensors and microcontroller
-%     }
-%     \label{fig:sensor_system}
-% \end{figure}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.8\textwidth]{circuit_diagram.png}
@@ -116,15 +92,16 @@ The Actuator system was composed of a 150W brushless DC motor from Maxon
 \FloatBarrier
 
 \subsection{Control strategy}
-A sEMG torque estimation control strategy following the work of Lu et al. 
-\cite{lu_development_2019} was put in place. The key difference between the 
-control strategy presented in this report and the one presented by Lu et al. 
+A sEMG torque estimation control strategy following the work of Toro-Ossaba et al. 
+\cite{toro-ossaba_myoelectric_2024} was put in place. The key difference between the 
+control strategy presented in this report and ones presented by others 
+\cite{lu_development_2019, wu_neural-network-enhanced_2019, wu_adaptive_2023}
 is that the system output torque is controlled instead of the system angle.  
 
 A version of the control strategy is illustrated in Figure \ref{fig:control_diagram}. 
 The sEMG signal gathered from the Myoware muscle sensor (Myo) is fed into a 
 torque estimation algorithm that determines user intended torque with a pre-trained 
-neural network (NN). Depending on the NN inputs, the control strategy could either be 
+NN. Depending on the NN inputs, the control strategy could either be 
 open or closed loop.  
 
 In the case of an open loop system, only the user sEMG signal is used to determine 
@@ -144,7 +121,7 @@ torque was not considered necessary.
         \tikzstyle{block} = [draw, rectangle]
         
         \node [block, draw] (input) at (0,0) {Myo};
-        \node [block, draw, right of=input, node distance=3.5cm] (alg) {%
+        \node [block, draw, right of=input, node distance=4cm] (alg) {%
           \begin{tabular}{c}
             Torque\\ 
             Estimation
@@ -157,30 +134,41 @@ torque was not considered necessary.
           \end{tabular}
         };
         \node [block, right of=inv-model, node distance=2cm] (gain) {K};
-        \node [block, right of=gain, node distance=2cm] (driver) {
+        \node [block, right of=gain, node distance=1.8cm] (driver) {
           \begin{tabular}{c}
             EPOS4\\ 
             Driver
           \end{tabular}
         };
+        \node [block, above of=driver, node distance=1.5cm] (angle) {
+          \begin{tabular}{c}
+            Joint Angle\\ 
+            Estimation
+          \end{tabular}
+        };
         \node [block, right of=driver, node distance=2cm] (motor) {Motor};
-        \node [right of=motor] (sys) {$\sum$};
+        \node [right of=motor, node distance=1.5cm] (sys) {$\sum$};
 
-        \draw [->] (input) -- node[above] {sEMG} (alg);
+        \draw [->] (input) -- node[above] {$s_{k-2},s_{k-1},s_k$} (alg);
         \draw [->] (alg) -- node[above] {$T_d$} (inv-model);
         \draw [->] (inv-model) -- node[above] {$T_m$} (gain);
         \draw [->] (gain) -- node[above] {$I$} (driver);
         \draw [->] (driver) -- (motor);
         \draw [->] (motor) -- node[above] {$\tau_m$} (sys);
-        \draw [->, dotted] (sys) -- ++(0,1) -| node[near end] {$\theta$} (alg);
+        \draw [->] (sys) |- node[near end] {$q_1,q_2$} (angle);
+        \draw [->] (angle) -| node[near start] {$\theta$} (inv-model);
+        \draw [->, dotted] (angle) -| (alg);
         % \draw [->] (sys) -- ++(0,-1) -| node[near end] {$\theta$} (inv-model);
     \end{tikzpicture}
     \caption{
-      Control Diagram - $T_d$ designates user desired torque (the torque 
-      necessary to perform the movement that the user intends), $T_m$ is the 
-      corresponding motor torque required as input to the orthosis system, $\theta$ 
-      is the angle of the elbow joint, $K$ is a gain that sets the assistance level 
-      of the system and turns $T_m$ into a current requirement $I$
+      Control Diagram - ($s_{k-2},s_{k-1},s_k$) designate the last three
+      sEMG measures of the myoware sensor, $T_d$ designates user desired 
+      torque (the torque necessary to perform the movement that the user 
+      intends), $T_m$ is the corresponding motor torque required as input 
+      to the orthosis system, $K$ is a gain that sets the assistance level 
+      of the system and turns $T_m$ into a current requirement $I$, $\theta$ 
+      is the angle of the elbow joint, $q_1$ and $q_2$ are quaternions 
+      indicating upper arm and forearm spatial orientation  
     }
     \label{fig:control_diagram}
 \end{figure}
@@ -283,7 +271,8 @@ value.
 \FloatBarrier
 
 \subsubsection{Torque estimation}
-For torque estimation, a data-driven NN approach was taken.  
+For torque estimation, a data-driven NN approach similar to Toro-Ossaba et al. 
+\cite{toro-ossaba_myoelectric_2024} was taken.  
 
 Initial data was gathered at INRIA with the help of Yiru Guo and Alyssia Colas. 
 Said data consisted of joint angles and sEMG from the biceps brachii muscle. 
@@ -306,17 +295,27 @@ was then normalized to serve as training data for the NN.
 A sequential NN with a single hidden layer composed of 16 neurons was developed. 
 The training and validation data were created from the initial experiments. 
 Reference torque was obtained through calculation with the following formula, 
-gotten from Lu et al. \cite{lu_development_2019}: 
+gotten from Toro-Ossaba et al. \cite{toro-ossaba_myoelectric_2024}: 
 
-\begin{align*}
-  \tau&=((m+\omega)l_{cm}^2+J)\ddot{\theta}+\beta \dot{\theta}+(ml_{cm}+\omega l)g\sin{\theta}
-\end{align*}  
+\begin{equation}
+  \centering
+  \tau=((m+\omega)l_{cm}^2+J)\ddot{\theta}+\beta \dot{\theta}+(ml_{cm}+\omega l)g\sin{\theta}
+  \label{eq:torque}
+\end{equation}
 
 Where $m$ is the mass of the subject forearm and arm, $\omega$ is the mass of 
 the carried load, $l$ is the distance from the elbow to the center of the hand,
 $l_{cm}$ is the distance from the elbow to the forearm center of mass, $J$ is 
 the moment of inertia of the forearm, $g$ is gravitational acceleration and 
-$\beta$ is joint friction.  
+$\beta$ is joint friction. The result of this calculation is illustrated in 
+Figure \ref{fig:torque_from_angle}.  
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\linewidth]{torque_from_angle.png}
+  \caption{Torque and angle relationship}
+  \label{fig:torque_from_angle}
+\end{figure}
 
 Four neural network models with identical one hidden layer architecture were trained. 
 The initial two models were trained on a singular dataset. One model was trained 
@@ -330,7 +329,7 @@ pair. They were denoted as $multi\_open\_model$ and $multi\_closed\_model$ respe
 \subsubsection{Inverse model}
 To calculate the required motor torque $T_m$ from the desired torque $T_d$, 
 an inverse model of the orthosis force transmission must be applied. Unfortunately, 
-such a model was not available so ideal conditions were considered. The model 
+such a model was not available, so ideal conditions were considered. The model 
 illustrated in Figure \ref{fig:orthosis_model} was used and perfect force 
 transmission was hypothesised. The upper arm segment was considered to be along the 
 vertical axis for simplicity, i.e. $\psi=0$.  
@@ -380,9 +379,11 @@ Since $\alpha$ is a function of $\theta$, it can be calculated:
 \end{align*}  
 
 Finally, we obtain
-\begin{align*}
-  ||\vec{T_m}|| &= \frac{||\vec{b}-\vec{a}|| \cdot r \cdot ||\vec{T_d}||}{||\vec{a} \times (\vec{b}-\vec{a})||}  
-\end{align*}  
+\begin{equation}
+  \centering
+  ||\vec{T_m}|| = \frac{||\vec{b}-\vec{a}|| \cdot r \cdot ||\vec{T_d}||}{||\vec{a} \times (\vec{b}-\vec{a})||}  
+  \label{eq:inv_model}
+\end{equation}  
 
 Figure \ref{fig:model_1N} illustrates torque predicted by the above model for 
 different anchor points of the orthosis cable. 

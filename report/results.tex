@@ -82,7 +82,7 @@ for control purposes.
     \centering
     \begin{subfigure}{0.3\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{front_view.jpg}
+        \includegraphics[width=\linewidth]{front_view.png}
         \caption{Front}
     \end{subfigure}
     \begin{subfigure}{0.3\textwidth}
@@ -92,7 +92,7 @@ for control purposes.
     \end{subfigure}
     \begin{subfigure}{0.3\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{back_view.jpg}
+        \includegraphics[width=\linewidth]{back_view.png}
         \caption{Back}
     \end{subfigure}
     \caption{
@@ -109,15 +109,16 @@ did not produce the desired results based on visual evaluation.
 The goal was that the test system shown in Figure \ref{fig:setup} 
 starts applying an assistive torque as soon as motion intention is detected and 
 stops providing this assistance as soon as that intention disappears. However, 
-utilizing the devized control strategy only resulted in sporadic flexion of the 
+utilizing the devised control strategy only resulted in sporadic flexion of the 
 test system as the identified torque values peaked too fast and too high, on top 
 of arriving well after the user had already begun the motion.  
 
 A test where the test system was controlled by an even simpler control strategy 
-shown in Figure \ref{} was successfully conducted. This test consisted in 
+shown in Figure \ref{fig:simplified_control_diagram} was successfully conducted. This test consisted in 
 controlling the test system proportionally to the user's sEMG signal. Current 
 command values were saturated for safety. The result was flexion of the test 
-system that could be controlled by the contraction of the user's biceps.  
+system that could be controlled by the contraction of the user's biceps through 
+proportional current control.
 
 \begin{figure}[htbp]
     \centering

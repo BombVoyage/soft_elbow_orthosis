@@ -1,18 +1,20 @@
 \chapter{State of the art}
-
-\section{Introduction}
-% All similar research
 Multiple research papers have covered the topic of soft wearable orthoses for 
-upper as well as lower limbs. Lu et al. \cite{lu_development_2019} have developed 
+upper as well as lower limbs. The work described in this report found most of its 
+inspiration in the following research papers. 
+
+First, Lu et al. \cite{lu_development_2019} developed 
 a joint torque estimation control strategy for a soft elbow exoskeleton to 
 provide effective power assistance. Later, Wu at al. 
 have expanded on this work by optimizing anchor points in the mechanical design and 
 modifying the control strategy \cite{wu_neural-network-enhanced_2019}, then by updating 
 the estimation of joint torque to determine motion intention \cite{wu_adaptive_2023}.
+Lastly, the recent works of Toro-Ossaba et al. \cite{toro-ossaba_myoelectric_2024} 
+on the control of a soft elbow exoskeleton influenced numerous decisions made 
+throughout this work.  
 
 
 \section{Sensors}
-% muscle activity, angle, force
 When it comes to the control system itself, multiple sensors can be used to acquire 
 relevant data. This data is required for the generation of input as well as the 
 control feedback. In the case of an upper limb orthotic device, the system input 
@@ -47,14 +49,70 @@ EEG precede their EMG response by around 23ms \cite{xu_delay_2016}. Therefore,
 EMG and EEG signals can allow for a quicker reaction to the user's motion intention 
 compared to FMG. 
 \subsection{Kinematics}
-Various sensors can serve the purpose of gathering information about the system 
-kinematics. The most 
-% IMUs: accel, gyro, magn
+In the case of rigid exoskeleton devices, incremental encoders can suffice to 
+determine system kinematics. For soft devices, various sensors can serve the 
+purpose of gathering this information. The most used sensor for the 
+acquisition of joint angles is the inertial 
+measurement unit (IMU). These sensors are used in multiple works \cite{lu_development_2019, 
+wu_adaptive_2023}. Two IMUs, one on each side of the target joint, 
+are needed to measure the joint angle and the measurement is made by performing quaternion 
+calculations. 
 
-\subsection{Dynamics}
+Gibbs et al. \cite{gibbs_wearable_2005} present an alternative 
+method of measuring joint angle consisting in wearable conductive fiber sensors. 
+These sensors present an average root mean square (RMS) error of 2.5° when 
+compared with a standard goniometer.  
+
+A systematic review on the validity and reliability of wearable sensors for joint 
+angle estimation \cite{poitras_validity_2019} encourages the use of IMUs as low-cost 
+alternatives to state-of-the art motion capture systems.  
+
+\subsection{Kinetics}
+Multiple sensors may be used to acquire feedback of the system kinetics for the 
+control of active orthotic devices: 
+
+\begin{IEEEitemize}
+  \item Sangha et al. \cite{sangha_compact_2016} used FSR to measure user applied 
+    force for the control of a wrist orthosis  
+  \item Lu et al. \cite{lu_development_2019} used a tension sensor 
+\end{IEEEitemize}
+
+Further research was not conducted on this type of feedback.  
 
 \section{Actuators}
 % hydraulics, motors, types of motors
+In the conducted research, various actuators were found in the implementation 
+of orthotic devices: 
 
-\section{Processing}
-% How to get motor input from muscle activity
+\begin{IEEEitemize}
+  \item Baysal et al. \cite{baysal_implementation_2023} used a pneumatic system
+  \item Copaci et al. \cite{copaci_sma_2019} used a shape memory alloy (SMA) based 
+    approach, by heating and cooling SMA cables to make them expand and retract
+  \item Multiple papers \cite{lu_development_2019, wu_neural-network-enhanced_2019, 
+    wu_adaptive_2023} use a DC motor and cable system
+\end{IEEEitemize}
+
+After discussing with Antoine Dequidt, expert in the design and control of 
+robotic systems applied to robotic exoskeletons, rehabilitation and assistive 
+robots, a DC motor based approach, almost identical to the ones cited above, 
+was suggested. Furthermore, Dequidt provided recommendations for the motor 
+specifications, namely: the motor should be brushless and it should have high 
+nominal torque to prevent the need for a large reduction gear, thus ensuring 
+that the system remains reversible.  
+
+\FloatBarrier
+\section{Algorithms}
+The algorithms put in place for the control of active orthotic devices mainly 
+serve the purpose of quantifying user motion intention. According to the 
+systematic review mentioned above \cite{dos_santos_signals_2023}: 
+
+\begin{quote}
+  It was possible to observe a heterogeneity on the algorithms used for identifying 
+  motion intention, such as neural networks, linear discriminant analysis 
+  classifiers, support vector machines, proportional control and thresholding. 
+  It was also identified the need for further studies comparing these techniques.
+\end{quote}
+
+However, in the conducted research, neural networks (NN) were the most prevalent 
+approach, see e.g. \cite{lu_development_2019, wu_neural-network-enhanced_2019, 
+wu_adaptive_2023, sangha_compact_2016}. 
