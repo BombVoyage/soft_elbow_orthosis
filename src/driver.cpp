@@ -1,3 +1,11 @@
+//============================================================================
+// Name        : driver.cpp
+// Author      : Dawid Sienkiewicz
+// Version     :
+// Copyright   : maxon motor ag 2014-2018
+// Description : Hello Epos in C++
+//============================================================================
+
 #include "Definitions.h"
 #include <cstddef>
 #include <cstdlib>
@@ -12,6 +20,7 @@
 #include <sys/times.h>
 #include <sys/types.h>
 #include <unistd.h>
+// PDI
 #include "../include/driver.h"
 #include "../include/listener.h"
 #include <netinet/in.h>
@@ -30,7 +39,7 @@ EAppMode g_eAppMode = CURRENT;
 const string g_programName = "driver";
 
 void PrintUsage() {
-  cout << "Usage: driver" << endl;
+  cout << "Usage: driver CONTROL_MODE" << endl;
   cout << "\t-h : this help" << endl;
   cout << "\t-c : current control mode" << endl;
   cout << "\t-p : position control mode" << endl;
@@ -145,6 +154,10 @@ int ParseArguments(int argc, char **argv) {
 
   opterr = 0;
 
+  if(argc==1){
+    PrintUsage();
+    exit(0);
+  }
   while ((lOption = getopt(argc, argv, "hcpv")) != -1) {
     switch (lOption) {
     case 'c':
@@ -158,7 +171,7 @@ int ParseArguments(int argc, char **argv) {
       break;
     case 'h': 
       PrintUsage();
-      exit(1);
+      exit(0);
     case '?': // unknown option...
       stringstream msg;
       msg << "Unknown option: '" << char(optopt) << "'!";
